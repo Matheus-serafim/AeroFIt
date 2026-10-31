@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Acompanhe seus treinos de caminhada e corrida com GPS e métricas.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AeroFit | Treinamento Inteligente</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="#inicio"><span>A</span><strong>AeroFit</strong></a>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#treino">Treinamento</a>
+      <a href="#monitoramento">Monitoramento</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div>
+        <span class="tag">TREINAMENTO INTELIGENTE</span>
+        <h1>Supere seus<br><span>limites.</span></h1>
+        <p>Monitore suas atividades aeróbicas, acompanhe seu desempenho e evolua com inteligência.</p>
+        <a href="#treino" class="btn">Começar treinamento</a>
+      </div>
+      <div class="hero-orbit" aria-hidden="true">⌁</div>
+    </section>
+
+    <section class="panel" id="treino">
+      <div class="section-title"><div><span class="tag">01 / CONFIGURAÇÃO</span><h2>Seu treinamento</h2></div></div>
+      <div class="config-grid">
+        <label>Idade<input type="number" id="idade" value="20" min="13" max="100"></label>
+        <label>Atividade<select id="atividade"><option value="Caminhada">Caminhada</option><option value="Corrida">Corrida</option></select></label>
+        <label>Meta de distância (km)<input type="number" id="meta" value="3" min="0.1" step="0.1"></label>
+      </div>
+      <p class="hint">FCM máxima estimada pela fórmula 208 − (0,7 × idade). É uma estimativa, não uma medição de batimentos.</p>
+    </section>
+
+    <section class="dashboard" id="monitoramento">
+      <article class="card"><span>TEMPO</span><strong id="tempo">00:00:00</strong><small>Tempo em atividade</small></article>
+      <article class="card"><span>DISTÂNCIA</span><strong id="distancia">0.00 <small>km</small></strong><small>Total percorrido</small></article>
+      <article class="card"><span>VELOCIDADE</span><strong id="velocidade">0.0 <small>km/h</small></strong><small>Velocidade atual</small></article>
+      <article class="card"><span>FCM MÁXIMA ESTIMADA</span><strong id="fcm">— <small>bpm</small></strong><small id="fcmLegenda">Informe sua idade</small></article>
+    </section>
+
+    <section class="panel">
+      <div class="section-title map-title">
+        <div><span class="tag">02 / GPS EM TEMPO REAL</span><h2>Seu percurso</h2></div>
+        <span id="gpsStatus" class="gps-status">GPS aguardando</span>
+      </div>
+      <div id="mapa" role="application" aria-label="Mapa do percurso do treino"></div>
+      <div class="gps-info">
+        <span>LATITUDE <b id="latitude">—</b></span>
+        <span>LONGITUDE <b id="longitude">—</b></span>
+        <span>PRECISÃO <b id="precisao">—</b></span>
+      </div>
+      <div class="botoes">
+        <button id="iniciar" class="primary">▶ Iniciar treino</button>
+        <button id="pausar" disabled>Ⅱ Pausar</button>
+        <button id="finalizar" class="finish" disabled>■ Finalizar</button>
+        <button id="centralizar" type="button">◎ Minha posição</button>
+      </div>
+      <p class="hint">O mapa usa OpenStreetMap e Leaflet. O GPS exige permissão e funciona em HTTPS ou localhost. A precisão depende do aparelho e do sinal disponível.</p>
+    </section>
+
+    <section class="panel">
+      <span class="tag">03 / INTENSIDADE</span><h2>Frequência cardíaca estimada</h2>
+      <div class="fcm-info">
+        <div><span>FCM máxima</span><strong id="fcmMax">— bpm</strong></div>
+        <div><span>Zona moderada (50–70%)</span><strong id="zonaModerada">— bpm</strong></div>
+        <div><span>Zona vigorosa (70–85%)</span><strong id="zonaVigorosa">— bpm</strong></div>
+      </div>
+      <p class="hint">O navegador não mede batimentos cardíacos sozinho. Para acompanhar a FC real, é necessário integrar um relógio ou sensor compatível.</p>
+    </section>
+
+    <section class="panel coach">
+      <span class="tag">04 / AEROFIT COACH</span><h2>Seu treinador inteligente</h2>
+      <div class="coach-message"><div class="coach-icon">✦</div><div><strong id="tituloCoach">Olá! Vamos começar?</strong><p id="mensagemCoach">Inicie seu treinamento para receber orientações sobre seu desempenho.</p></div></div>
+      <div class="goal-heading"><span>Progresso da meta</span><strong id="progressoTexto">0%</strong></div>
+      <div class="progress"><div id="progresso"></div></div>
+    </section>
+  </main>
+  <footer>AeroFit © 2026 — Sua evolução começa aqui.<small>Não é um dispositivo médico. Respeite seus limites.</small></footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
+    }
+  </script>
+</body>
+</html>
